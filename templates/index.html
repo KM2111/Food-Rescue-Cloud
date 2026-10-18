@@ -1,1 +1,64 @@
-
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FoodRescue Cloud | Share Food, Share Hope</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="hero">
+    <nav><div class="brand">🥗 FoodRescue <span>Cloud</span></div><a href="#donate">Add donation</a></nav>
+    <div class="hero-content">
+      <p class="eyebrow">A CLOUD-POWERED COMMUNITY PROJECT</p>
+      <h1>Good food deserves<br><em>a second chance.</em></h1>
+      <p class="intro">A simple platform to record surplus food and help communities reduce food waste.</p>
+      <a class="primary" href="#donate">Share surplus food ↗</a>
+    </div>
+    <div class="hero-art" aria-hidden="true"><div class="plate">🥬<br>🍅🥕</div><div class="leaf leaf-one">✦</div><div class="leaf leaf-two">✳</div></div>
+  </header>
+  <main>
+    <section class="stats">
+      <div><span class="stat-number">{{ total }}</span><span class="stat-label">Donations recorded</span></div>
+      <div><span class="stat-number">24/7</span><span class="stat-label">Cloud accessibility</span></div>
+      <div><span class="stat-number">1 goal</span><span class="stat-label">Less food waste</span></div>
+    </section>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}{% for category, message in messages %}<div class="notice {{ category }}">{{ message }}</div>{% endfor %}{% endif %}
+    {% endwith %}
+    <section class="content-grid">
+      <div class="form-card" id="donate">
+        <p class="eyebrow">MAKE A DIFFERENCE</p><h2>Record a food donation</h2>
+        <p class="muted">Enter surplus food details so the community can keep track of available donations.</p>
+        <form action="{{ url_for('donate') }}" method="post">
+          <label>Food item *<input name="food_name" maxlength="120" placeholder="e.g., Fresh vegetables" required></label>
+          <label>Quantity *<input name="quantity" maxlength="80" placeholder="e.g., 5 meal boxes" required></label>
+          <label>Pickup location *<input name="location" maxlength="160" placeholder="Area or pickup point" required></label>
+          <label>Contact details *<input name="contact" maxlength="120" placeholder="Phone or email" required></label>
+          <label>Additional notes<textarea name="notes" maxlength="300" rows="3" placeholder="Pickup timing, storage details, etc."></textarea></label>
+          <button type="submit">Save donation <span>→</span></button>
+        </form>
+      </div>
+      <div class="list-panel">
+        <p class="eyebrow">COMMUNITY BOARD</p><h2>Recent donations</h2>
+        <p class="muted">Latest food entries stored in the database.</p>
+        {% if donations %}
+          <div class="donation-list">
+          {% for item in donations %}
+            <article class="donation">
+              <div class="food-icon">♧</div><div class="donation-info"><h3>{{ item.food_name }}</h3><p>{{ item.quantity }} · {{ item.location }}</p><p class="small">{{ item.contact }}</p>{% if item.notes %}<p class="small">{{ item.notes }}</p>{% endif %}</div>
+              <span class="tag">Available</span>
+            </article>
+          {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty"><div>🌱</div><h3>No donations yet</h3><p>Add the first entry using the form. It will appear here after saving.</p></div>
+        {% endif %}
+        <p class="small health-link">System check: <a href="/health" target="_blank" rel="noopener">/health</a></p>
+      </div>
+    </section>
+    <section class="cloud-note"><span>☁</span><div><h3>Built for the cloud</h3><p>Flask handles application requests, Render hosts the web service, and PostgreSQL stores donation records persistently.</p></div></section>
+  </main>
+  <footer>FoodRescue Cloud · Student Cloud Computing Project · Built to support a less wasteful community</footer>
+</body>
+</html>
